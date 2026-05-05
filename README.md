@@ -23,6 +23,7 @@
 13. [Módulo Opcional B — Roles, Permisos y Administración de Organización](#módulo-opcional-b--roles-permisos-y-administración-de-organización)
 14. [Módulo Opcional C — Discussions, InnerSource y GitHub Pages](#módulo-opcional-c--discussions-innersource-y-github-pages)
 15. [Troubleshooting](#troubleshooting)
+16. [Guía de GitFlow](doc/gitflow.md)
 
 ---
 
@@ -221,6 +222,8 @@ Una solicitud formal para integrar tus cambios al código principal. Permite:
 - Ejecutar validaciones automáticas.
 
 ## Flujo típico de trabajo en equipo
+
+> Para una visión más completa de cómo se organizan las ramas en equipos, consulta la [Guía de GitFlow](doc/gitflow.md).
 
 ```
 1. Clonar el repositorio         →  Obtener una copia local
@@ -499,7 +502,7 @@ feature/dashboard:                             ●───●───●
 
 ## Estrategia de ramas: GitFlow simplificado
 
-Para equipos, se recomienda seguir una convención clara:
+Para equipos, se recomienda seguir una convención clara. Puedes profundizar en este modelo en la [Guía de GitFlow](doc/gitflow.md).
 
 | Rama | Propósito | Ejemplo |
 | --- | --- | --- |
