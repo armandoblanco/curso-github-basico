@@ -1,0 +1,12 @@
+{
+  "name": "practica-curso-github",
+  "version": "1.0.0",
+  "description": "Proyecto de práctica del curso de GitHub Fundamentos",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "keywords": ["github", "curso", "practica"],
+  "license": "MIT"
+}

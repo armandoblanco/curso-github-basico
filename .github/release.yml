@@ -1,0 +1,15 @@
+# .github/release.yml
+changelog:
+  categories:
+    - title: Nuevas funcionalidades
+      labels:
+        - enhancement
+    - title: Corrección de errores
+      labels:
+        - bug
+    - title: Documentación
+      labels:
+        - documentation
+    - title: Otros cambios
+      labels:
+        - "*"

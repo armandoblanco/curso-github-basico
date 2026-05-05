@@ -1,4 +1,4 @@
-# Curso Práctico de GitHub — Fundamentos (2 horas)
+# Curso Práctico de GitHub — Fundamentos (2.5 horas)
 
 ## De Cero a Colaborar: Git, GitHub y Flujos de Trabajo en Equipo
 
