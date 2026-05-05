@@ -991,6 +991,131 @@ Para un tratamiento profundo de estas herramientas, consulta el [workshop de Git
 5. Verifica que `.env` está en tu `.gitignore`.
 6. Intenta hacer push directo a `main` y observa qué sucede.
 
+## Environments (Entornos de despliegue)
+
+Los **Environments** en GitHub permiten definir entornos de despliegue (como `development`, `staging`, `production`) con reglas de protección y secretos específicos para cada uno. Son el complemento natural de los Rulesets: mientras los Rulesets protegen las ramas, los Environments protegen los despliegues.
+
+### ¿Por qué usar Environments?
+
+Sin Environments, cualquier workflow puede desplegar a producción sin restricciones. Con Environments puedes exigir aprobaciones manuales, limitar qué ramas pueden desplegar, y aislar secretos sensibles por entorno.
+
+### Crear un Environment
+
+1. Ve a `Settings → Environments`.
+2. Haz clic en **"New environment"**.
+3. Escribe el nombre, por ejemplo `production`.
+4. Haz clic en **"Configure environment"**.
+
+### Reglas de protección
+
+Cada Environment puede tener reglas de protección independientes:
+
+| Regla | Qué hace | Cuándo usarla |
+| --- | --- | --- |
+| **Required reviewers** | Exige aprobación manual antes de desplegar | Producción, entornos críticos |
+| **Wait timer** | Agrega un tiempo de espera (minutos) antes de ejecutar | Dar tiempo para cancelar un despliegue |
+| **Deployment branches and tags** | Restringe qué ramas/tags pueden desplegar a este entorno | Solo `main` puede ir a producción |
+
+#### Configurar revisores requeridos:
+
+1. En la configuración del environment, activa **"Required reviewers"**.
+2. Agrega los usuarios o equipos que deben aprobar.
+3. Cuando un workflow intente desplegar, se pausará y esperará aprobación en la pestaña Actions.
+
+#### Restringir ramas de despliegue:
+
+1. En **"Deployment branches and tags"**, selecciona **"Selected branches and tags"**.
+2. Agrega una regla, por ejemplo `main` para que solo esa rama pueda desplegar a producción.
+3. Si alguien intenta desplegar desde `feature/*`, el workflow fallará automáticamente.
+
+### Secretos de Environment
+
+Los secretos de Environment son como los secretos del repositorio, pero solo están disponibles para workflows que se ejecutan en ese entorno específico:
+
+1. En la configuración del environment, ve a **"Environment secrets"**.
+2. Haz clic en **"Add secret"**.
+3. Agrega el nombre y valor del secreto.
+
+```
+Repositorio secretos:          Environment secretos:
+├── API_KEY (todos los envs)   ├── production
+│                              │   ├── DATABASE_URL (solo prod)
+│                              │   └── DEPLOY_TOKEN (solo prod)
+│                              └── staging
+│                                  ├── DATABASE_URL (solo staging)
+│                                  └── DEPLOY_TOKEN (solo staging)
+```
+
+Esto permite tener credenciales diferentes por entorno sin riesgo de que un workflow de staging use credenciales de producción.
+
+### Variables de Environment
+
+Además de secretos, puedes definir **variables** (no cifradas) en cada environment. Son útiles para valores de configuración que no son sensibles:
+
+1. En la configuración del environment, ve a **"Environment variables"**.
+2. Agrega variables como `APP_URL`, `LOG_LEVEL`, `REGION`, etc.
+
+### Usar un Environment en un workflow
+
+Para usar un Environment en GitHub Actions, agrega la propiedad `environment` al job:
+
+```yaml
+jobs:
+  deploy-staging:
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Desplegar a staging
+        run: echo "Desplegando a staging..."
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+  deploy-production:
+    runs-on: ubuntu-latest
+    environment: production
+    needs: deploy-staging     # Solo si staging fue exitoso
+    steps:
+      - uses: actions/checkout@v4
+      - name: Desplegar a producción
+        run: echo "Desplegando a producción..."
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+```
+
+En este ejemplo:
+- `deploy-staging` se ejecuta primero sin aprobación.
+- `deploy-production` espera a que staging termine (`needs`) y luego pide aprobación manual si el environment lo requiere.
+
+### Flujo visual de aprobación
+
+```
+Push a main
+    │
+    ▼
+┌─────────────────┐     ┌─────────────────┐
+│  deploy-staging  │────▶│ deploy-production│
+│  (automático)    │     │  (⏸ esperando    │
+│  ✓ completado    │     │   aprobación)    │
+└─────────────────┘     └─────────────────┘
+                               │
+                          Reviewer aprueba
+                               │
+                               ▼
+                        ✓ Desplegado a prod
+```
+
+### Environments + Rulesets: protección completa
+
+La combinación de Rulesets y Environments cubre todo el ciclo:
+
+| Protección | Mecanismo | Qué protege |
+| --- | --- | --- |
+| Código | **Rulesets** | Quién puede hacer merge a `main` |
+| Revisión | **CODEOWNERS** | Quién revisa qué archivos |
+| Secretos | **Environment secrets** | Credenciales aisladas por entorno |
+| Despliegue | **Environments** | Quién puede desplegar y a dónde |
+
 ---
 
 # Módulo 6 — Automatización con GitHub Actions (1:38-1:58)
