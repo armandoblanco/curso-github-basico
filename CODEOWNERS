@@ -4,15 +4,15 @@
 # automáticamente a los revisores correspondientes.
 
 # Documentación — reemplaza @mi-org/docs con tu equipo o usuario
-*.md                     @mi-org/docs
-/doc/                    @mi-org/docs
+*.md                     @armandoblanco
+/doc/                    @armandoblanco
 
 # Configuración de CI/CD
-/.github/workflows/      @mi-org/platform
+/.github/workflows/      @armandoblanco
 
 # Código fuente
-/src/                    @mi-org/desarrollo
+/src/                    @armandoblanco
 
 # Archivos de configuración sensibles
-/CODEOWNERS              @mi-org/seguridad
-.env.example             @mi-org/seguridad
+/CODEOWNERS              @armandoblanco
+.env.example             @armandoblanco
