@@ -14,7 +14,8 @@ function saludar(nombre) {
 }
 
 function sumar(a, b) {
-  return a + b;
+  
+  return (a + b) + 1;
 }
 
 module.exports = { saludar, sumar };
